@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="description" content="A beginner-friendly seminar website introducing Git, GitHub, version control and collaboration.">
+  <title>Git & GitHub | Developer Seminar</title>
+  <style>
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-2: #eef3f8;
+      --text: #1f2328;
+      --muted: #59636e;
+      --border: #d8dee4;
+      --dark: #0d1117;
+      --blue: #2f81f7;
+      --green: #238636;
+      --shadow: 0 14px 40px rgba(31, 35, 40, .08);
+      --radius: 18px;
+    }
+    body.dark {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-2: #212830;
+      --text: #e6edf3;
+      --muted: #9da7b3;
+      --border: #30363d;
+      --shadow: 0 14px 40px rgba(0, 0, 0, .25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 82px; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.65;
+      transition: background .25s, color .25s;
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .progress { position: fixed; inset: 0 auto auto 0; height: 3px; width: 0; background: var(--blue); z-index: 1000; }
+    .navbar {
+      position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,.94);
+      backdrop-filter: blur(14px); border-bottom: 1px solid #30363d;
+    }
+    .nav-inner {
+      max-width: 1160px; margin: auto; padding: 13px 24px; min-height: 68px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-weight: 800; font-size: 1.08rem; white-space: nowrap; }
+    .brand-mark { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #212830; color: #79c0ff; font-size: 1.25rem; }
+    .nav-links { display: flex; align-items: center; gap: 25px; }
+    .nav-links a { color: #c9d1d9; text-decoration: none; font-size: .92rem; transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: #79c0ff; }
+    .nav-actions { display: flex; align-items: center; gap: 9px; }
+    .icon-btn, .menu-btn {
+      border: 1px solid #424b56; background: #161b22; color: #e6edf3;
+      width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+    }
+    .menu-btn { display: none; font-size: 1.2rem; }
+    .hero {
+      color: #fff; overflow: hidden; position: relative;
+      background: radial-gradient(circle at 78% 20%, rgba(47,129,247,.28), transparent 28%),
+                  radial-gradient(circle at 15% 90%, rgba(35,134,54,.18), transparent 30%),
+                  linear-gradient(135deg, #0d1117, #152238 65%, #101820);
+    }
+    .hero-inner { max-width: 1160px; margin: auto; padding: 100px 24px 92px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 55px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #394b62; background: rgba(22,27,34,.7); color: #9ecbff; border-radius: 30px; padding: 7px 13px; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; background: #3fb950; border-radius: 50%; box-shadow: 0 0 12px #3fb950; }
+    h1 { font-size: clamp(2.7rem, 6vw, 5rem); line-height: 1.08; letter-spacing: -.055em; margin: 22px 0 20px; }
+    h1 span { color: #79c0ff; }
+    .hero-copy { color: #b7c4d3; max-width: 620px; font-size: 1.08rem; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 30px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 12px 19px; border-radius: 10px; text-decoration: none; font-weight: 750; border: 1px solid transparent; transition: transform .2s, background .2s; cursor: pointer; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { color: #fff; background: var(--green); }
+    .btn-primary:hover { background: #2ea043; }
+    .btn-outline { color: #e6edf3; border-color: #536273; background: rgba(22,27,34,.45); }
+    .hero-art { min-height: 300px; display: grid; place-items: center; position: relative; }
+    .orbit { width: 280px; height: 280px; border: 1px solid rgba(121,192,255,.35); border-radius: 50%; display: grid; place-items: center; position: relative; }
+    .orbit::before, .orbit::after { content: ""; position: absolute; border: 1px dashed rgba(121,192,255,.25); border-radius: 50%; }
+    .orbit::before { inset: 25px; } .orbit::after { inset: 55px; }
+    .git-icon { width: 116px; height: 116px; display: grid; place-items: center; background: linear-gradient(145deg,#f85149,#bd2c25); border-radius: 27px; transform: rotate(45deg); box-shadow: 0 20px 55px rgba(248,81,73,.25); }
+    .git-icon span { transform: rotate(-45deg); font-size: 4.1rem; font-weight: 900; color: #fff; }
+    .float-chip { position: absolute; background: #161b22; border: 1px solid #394b62; border-radius: 10px; padding: 9px 13px; color: #c9d1d9; font-size: .85rem; box-shadow: var(--shadow); }
+    .chip-one { top: 25px; right: -2px; } .chip-two { bottom: 25px; left: -12px; }
+    .section { padding: 82px 24px; }
+    .container { max-width: 1100px; margin: auto; }
+    .section-head { text-align: center; max-width: 690px; margin: 0 auto 42px; }
+    .kicker { color: var(--blue); font-size: .78rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    h2 { font-size: clamp(1.9rem, 4vw, 2.7rem); line-height: 1.2; letter-spacing: -.035em; margin: 9px 0 12px; }
+    .section-head p, .muted { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 27px; box-shadow: var(--shadow); }
+    .card-icon { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center; font-size: 1.5rem; background: var(--surface-2); margin-bottom: 17px; }
+    .card h3 { font-size: 1.18rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); }
+    .soft-section { background: var(--surface-2); }
+    .topic-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .topic { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .topic-number { color: var(--blue); font-weight: 850; font-size: .82rem; }
+    .topic h3 { margin: 8px 0 6px; font-size: 1.03rem; }
+    .topic p { color: var(--muted); font-size: .92rem; }
+    .compare { margin-top: 25px; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+    .compare-row { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .compare-row > div { padding: 15px 18px; border-bottom: 1px solid var(--border); }
+    .compare-row:last-child > div { border-bottom: 0; }
+    .compare-row > div + div { border-left: 1px solid var(--border); }
+    .compare-head { background: var(--surface-2); font-weight: 800; }
+    .agenda { max-width: 780px; margin: auto; display: grid; gap: 13px; }
+    .agenda-item { display: flex; gap: 17px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 13px; padding: 16px 19px; }
+    .agenda-num { flex: 0 0 39px; height: 39px; display: grid; place-items: center; background: var(--surface-2); border-radius: 11px; color: var(--blue); font-weight: 850; }
+    .agenda-item p { color: var(--muted); font-size: .92rem; }
+    .terminal { max-width: 820px; margin: auto; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+    .terminal-top { padding: 13px 18px; background: #161b22; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #30363d; }
+    .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; display: block; border-radius: 50%; background: #f85149; } .dots i:nth-child(2) { background: #d29922; } .dots i:nth-child(3) { background: #3fb950; }
+    .terminal-title { color: #9da7b3; font-size: .82rem; }
+    .command-list { padding: 10px 20px 18px; }
+    .command { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid #252d36; }
+    .command:last-child { border: 0; }
+    .command code { color: #7ee787; font-family: "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
+    .command small { display: block; color: #8b949e; margin-top: 3px; }
+    .copy-btn { flex: 0 0 auto; background: #212830; color: #c9d1d9; border: 1px solid #39434e; border-radius: 7px; padding: 6px 10px; cursor: pointer; font-size: .78rem; }
+    .copy-btn:hover { background: #303943; }
+    .quiz-box { max-width: 700px; margin: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); }
+    .quiz-question { font-size: 1.15rem; font-weight: 750; margin-bottom: 17px; }
+    .quiz-options { display: grid; gap: 10px; }
+    .quiz-option { text-align: left; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); color: var(--text); background: var(--surface); cursor: pointer; }
+    .quiz-option:hover { border-color: var(--blue); }
+    .quiz-option.correct { border-color: #238636; background: rgba(35,134,54,.1); }
+    .quiz-option.wrong { border-color: #da3633; background: rgba(218,54,51,.1); }
+    #quiz-feedback { min-height: 28px; margin-top: 14px; color: var(--muted); }
+    .quiz-next { margin-top: 14px; border: 0; }
+    .cta { text-align: center; color: white; background: linear-gradient(120deg,#10243d,#123b35); }
+    .cta p { color: #c4d1df; max-width: 620px; margin: 0 auto 24px; }
+    footer { background: #0d1117; color: #9da7b3; text-align: center; padding: 28px 20px; font-size: .9rem; }
+    footer strong { color: #e6edf3; }
+    .back-top { position: fixed; bottom: 22px; right: 22px; width: 43px; height: 43px; border: 0; border-radius: 50%; background: var(--blue); color: #fff; font-size: 1.2rem; cursor: pointer; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .back-top.show { opacity: 1; pointer-events: auto; }
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s, transform .65s; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; padding-top: 75px; }
+      .hero-copy { margin: auto; } .hero-buttons { justify-content: center; }
+      .hero-art { min-height: 270px; } .topic-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 680px) {
+      .nav-inner { padding: 11px 17px; flex-wrap: wrap; }
+      .menu-btn { display: block; }
+      .nav-links { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: 0; padding: 7px 0 10px; }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 10px 5px; border-top: 1px solid #30363d; }
+      .grid, .topic-grid { grid-template-columns: 1fr; }
+      .section { padding: 65px 18px; }
+      .hero-inner { padding: 70px 18px 65px; }
+      .orbit { width: 230px; height: 230px; }
+      .git-icon { width: 95px; height: 95px; }
+      .git-icon span { font-size: 3.4rem; }
+      .compare-row > div { padding: 11px 9px; font-size: .82rem; }
+      .card { padding: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+
+  <header class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="#home"><span class="brand-mark">⌘</span> Git & GitHub</a>
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a href="#about">Introduction</a>
+        <a href="#topics">Topics</a>
+        <a href="#agenda">Agenda</a>
+        <a href="#commands">Commands</a>
+        <a href="#quiz">Quiz</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">☾</button>
+        <button class="menu-btn" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="eyebrow">Beginner-friendly developer seminar</div>
+          <h1>From Code to <span>Collaboration.</span></h1>
+          <p class="hero-copy">Discover how Git and GitHub help developers track changes, protect their work, and build projects together. Start with the basics and leave ready to create your first repository.</p>
+          <div class="hero-buttons">
+            <a class="btn btn-primary" href="#about">Explore the seminar <span>→</span></a>
+            <a class="btn btn-outline" href="#commands">Try Git commands</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit">
+            <div class="git-icon"><span>⌘</span></div>
+            <div class="float-chip chip-one">git commit</div>
+            <div class="float-chip chip-two">git push ↑</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="kicker">The foundation</div>
+          <h2>First, understand the tools</h2>
+          <p>Git and GitHub work together, but they are not the same thing.</p>
+        </div>
+        <div class="grid">
+          <article class="card reveal">
+            <div class="card-icon">🔧</div>
+            <h3>What is Git?</h3>
+            <p>Git is a distributed version control system. It records changes in your project, lets you revisit earlier versions, and helps multiple people work on the same codebase.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card-icon">🐙</div>
+            <h3>What is GitHub?</h3>
+            <p>GitHub is an online platform for hosting Git repositories. It adds collaboration features such as pull requests, issues, code reviews, and project discussions.</p>
+          </article>
+        </div>
+        <div class="compare reveal" aria-label="Git and GitHub comparison">
+          <div class="compare-row compare-head"><div>Feature</div><div>Git</div><div>GitHub</div></div>
+          <div class="compare-row"><div>Type</div><div>Version control tool</div><div>Code hosting platform</div></div>
+          <div class="compare-row"><div>Where it works</div><div>On your computer</div><div>On the web</div></div>
+          <div class="compare-row"><div>Main purpose</div><div>Track code changes</div><div>Share and collaborate</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft-section" id="topics">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="kicker">What you'll learn</div>
+          <h2>Seminar learning path</h2>
+          <p>A practical introduction designed for students who are new to version control.</p>
+        </div>
+        <div class="topic-grid">
+          <article class="topic reveal"><div class="topic-number">01 / BASICS</div><h3>Version Control</h3><p>Why tracking changes matters and how repositories work.</p></article>
+          <article class="topic reveal"><div class="topic-number">02 / LOCAL GIT</div><h3>Essential Commands</h3><p>Initialize, stage, commit, branch, merge, and inspect changes.</p></article>
+          <article class="topic reveal"><div class="topic-number">03 / GITHUB</div><h3>Remote Repositories</h3><p>Create a repository, connect it, and push your project online.</p></article>
+          <article class="topic reveal"><div class="topic-number">04 / TEAMWORK</div><h3>Collaboration</h3><p>Clone projects, open pull requests, and report issues.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="agenda">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="kicker">Session plan</div>
+          <h2>Seminar agenda</h2>
+          <p>Suggested flow for a clear and engaging session.</p>
+        </div>
+        <div class="agenda">
+          <div class="agenda-item reveal"><div class="agenda-num">01</div><div><strong>Introduction to version control</strong><p>Understand the problem Git solves.</p></div></div>
+          <div class="agenda-item reveal"><div class="agenda-num">02</div><div><strong>Git vs. GitHub</strong><p>Learn the difference and how they work together.</p></div></div>
+          <div class="agenda-item reveal"><div class="agenda-num">03</div><div><strong>Live Git demonstration</strong><p>Initialize a project, make changes, and commit them.</p></div></div>
+          <div class="agenda-item reveal"><div class="agenda-num">04</div><div><strong>Publish on GitHub</strong><p>Create a remote repository and push your code.</p></div></div>
+          <div class="agenda-item reveal"><div class="agenda-num">05</div><div><strong>Collaboration and Q&A</strong><p>Explore pull requests, issues, and student questions.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section soft-section" id="commands">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="kicker">Hands-on practice</div>
+          <h2>Essential Git commands</h2>
+          <p>Click the copy button to copy a command during your demonstration.</p>
+        </div>
+        <div class="terminal reveal">
+          <div class="terminal-top"><div class="dots"><i></i><i></i><i></i></div><div class="terminal-title">Terminal — Git basics</div><span></span></div>
+          <div class="command-list">
+            <div class="command"><div><code>git init</code><small>Initialize a Git repository</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git status</code><small>Check the current state of files</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git add .</code><small>Stage all changed files</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git commit -m "Initial commit"</code><small>Save staged changes with a message</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git branch</code><small>List local branches</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git clone &lt;repository-url&gt;</code><small>Copy a remote repository to your computer</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git push -u origin main</code><small>Push the main branch to the remote repository</small></div><button class="copy-btn">Copy</button></div>
+            <div class="command"><div><code>git pull</code><small>Fetch and integrate remote changes</small></div><button class="copy-btn">Copy</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="quiz">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="kicker">Check your understanding</div>
+          <h2>Quick knowledge check</h2>
+          <p>Try this short quiz to see what you've learned.</p>
+        </div>
+        <div class="quiz-box reveal">
+          <div class="quiz-question" id="quizQuestion">1. Which tool tracks changes in your project files?</div>
+          <div class="quiz-options" id="quizOptions">
+            <button class="quiz-option" data-correct="true">Git</button>
+            <button class="quiz-option" data-correct="false">HTML</button>
+            <button class="quiz-option" data-correct="false">CSS</button>
+          </div>
+          <div id="quiz-feedback" role="status" aria-live="polite"></div>
+          <button class="btn btn-primary quiz-next" id="quizNext" hidden>Next question →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <div class="container reveal">
+        <div class="kicker" style="color:#79c0ff">Keep learning</div>
+        <h2>Build. Commit. Collaborate.</h2>
+        <p>Your first repository is the beginning. Explore open-source projects, practice with your classmates, and keep improving your developer workflow.</p>
+        <a class="btn btn-primary" href="https://github.com/" target="_blank" rel="noopener noreferrer">Explore GitHub ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Git & GitHub Seminar</strong> · Learn • Build • Collaborate</p>
+    <p>Replace this line with your college name, department, event date, and presenter details.</p>
+  </footer>
+
+  <button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+
+  <script>
+    // Mobile navigation
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      menuToggle.textContent = isOpen ? '✕' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.textContent = '☰';
+      });
+    });
+
+    // Dark / light theme, with preference saved in this browser
+    const themeToggle = document.getElementById('themeToggle');
+    if (localStorage.getItem('seminar-theme') === 'dark') document.body.classList.add('dark');
+    function updateThemeButton() {
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀' : '☾';
+    }
+    updateThemeButton();
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('seminar-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      updateThemeButton();
+    });
+
+    // Reading progress and back-to-top button
+    const progress = document.getElementById('progress');
+    const backTop = document.getElementById('backTop');
+    function onScroll() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (scrollable > 0 ? window.scrollY / scrollable * 100 : 0) + '%';
+      backTop.classList.toggle('show', window.scrollY > 450);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Reveal content as it enters the viewport
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Copy individual Git commands
+    document.querySelectorAll('.copy-btn').forEach(button => {
+      button.addEventListener('click', async () => {
+        const command = button.parentElement.querySelector('code').textContent;
+        try {
+          await navigator.clipboard.writeText(command);
+          button.textContent = 'Copied!';
+        } catch (error) {
+          button.textContent = 'Select command';
+        }
+        setTimeout(() => button.textContent = 'Copy', 1500);
+      });
+    });
+
+    // Highlight the navigation link for the section currently in view
+    const sections = document.querySelectorAll('main section[id]');
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.querySelectorAll('a').forEach(a => {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    sections.forEach(section => sectionObserver.observe(section));
+
+    // Small interactive quiz
+    const questions = [
+      { q: '1. Which tool tracks changes in your project files?', options: ['Git', 'HTML', 'CSS'], answer: 0, note: 'Correct! Git is a version control system.' },
+      { q: '2. What is GitHub mainly used for?', options: ['Designing websites', 'Hosting Git repositories and collaboration', 'Writing operating systems'], answer: 1, note: 'Exactly! GitHub hosts repositories and provides collaboration tools.' },
+      { q: '3. Which command records staged changes?', options: ['git push', 'git clone', 'git commit'], answer: 2, note: 'Correct! git commit saves a snapshot of staged changes.' },
+      { q: '4. Which command downloads a remote repository to your computer?', options: ['git clone', 'git status', 'git init'], answer: 0, note: 'Correct! git clone creates a local copy of a remote repository.' }
+    ];
+    let questionIndex = 0;
+    const questionEl = document.getElementById('quizQuestion');
+    const optionsEl = document.getElementById('quizOptions');
+    const feedbackEl = document.getElementById('quiz-feedback');
+    const nextBtn = document.getElementById('quizNext');
+
+    function renderQuestion() {
+      const item = questions[questionIndex];
+      questionEl.textContent = item.q;
+      optionsEl.innerHTML = '';
+      feedbackEl.textContent = '';
+      nextBtn.hidden = true;
+      item.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.className = 'quiz-option';
+        button.textContent = option;
+        button.addEventListener('click', () => {
+          if (optionsEl.dataset.answered) return;
+          optionsEl.dataset.answered = 'true';
+          const correct = index === item.answer;
+          button.classList.add(correct ? 'correct' : 'wrong');
+          if (!correct) optionsEl.children[item.answer].classList.add('correct');
+          feedbackEl.textContent = correct ? item.note : 'Not quite. ' + item.note;
+          nextBtn.hidden = false;
+        });
+        optionsEl.appendChild(button);
+      });
+      delete optionsEl.dataset.answered;
+      nextBtn.textContent = questionIndex === questions.length - 1 ? 'Restart quiz ↻' : 'Next question →';
+    }
+    nextBtn.addEventListener('click', () => {
+      questionIndex = (questionIndex + 1) % questions.length;
+      renderQuestion();
+    });
+    renderQuestion();
+  </script>
+</body>
+</html>
+
+
